@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 事件触发器
+    class EventEmitter {
+      constructor () {
+        // { 'click': [fn1, fn2], 'change': [fn] }
+        this.subs = Object.create(null) // 使用 Object.create() 的方法创建一个对象可以传递一个参数，这个参数的作用是去设置创建的对象的原型，设置为 null 声明这个对象没有原型属性，可以提高性能。以为这里的对象只需要存储键值对的形式，所以不需要原型。
+      }
+
+      // 注册事件
+      $on (eventType, handler) {
+        // 判断 this.subs[eventType] 是否存在，如果存在返回原数组，否则创建这个数组
+        this.subs[eventType] = this.subs[eventType] || []
+        this.subs[eventType].push(handler)
+      }
+
+      // 触发事件
+      $emit (eventType) {
+        // 这里的 $emit 只接收一个参数，是一个省略的写法，不考虑事件传参的情况
+        if (this.subs[eventType]) {
+          this.subs[eventType].forEach(handler => {
+            handler()
+          })
+        }
+      }
+    }
+
+    // 测试
+    let em = new EventEmitter()
+
+    em.$on('click', () => {
+      console.log('我是 click 的订阅者1')
+    })
+
+    em.$on('click', () => {
+      console.log('我是 click 的订阅者2')
+    })
+
+    em.$emit('click')
+    
+  </script>
+</body>
+</html>
